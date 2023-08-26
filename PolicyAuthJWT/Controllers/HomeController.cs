@@ -7,6 +7,7 @@ namespace PolicyAuthJWT.Controllers
     public class HomeController : Controller
     {
         [Route("/")]
+        [Authorize(Policy = "HomeRead")]
         public IActionResult Index()
         {
             ViewBag.Title = "Home";

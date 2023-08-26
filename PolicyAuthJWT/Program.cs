@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using PolicyAuthJWT.Config.Auth;
 using PolicyAuthJWT.Config.Auth.JwtService;
 using System.Text;
 
@@ -13,7 +15,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IJwtService, JwtService>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
-    var secretKey = "this-is-a-very-secret-key";
+    var secretKey = "this_is_a_very_secret_key";
     var issuer = "your_issuer";
     var audience = "your_audience";
     var expirationInMinutes = 60;
@@ -37,14 +39,16 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = "your_issuer",
             ValidAudience = "your_audience",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this-is-a-very-secret-key"))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this_is_a_very_secret_key"))
         };
     });
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy();
-//});
+builder.Services.AddAuthorization(options =>
+{
+    PolicyAuthorization.Configure(options);
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, PolicyAuthorizationHandler>();
 
 var app = builder.Build();
 

@@ -45,7 +45,7 @@ namespace PolicyAuthJWT.Controllers
                 SameSite = SameSiteMode.Strict
             });
 
-            return Ok(new { Token = token });
+            return LocalRedirect("/");
         }
     }
 }
